@@ -1,19 +1,13 @@
-package com.example.staffing.model;
+package com.example.staffing.dto;
 
-import jakarta.persistence.*;
+import com.example.staffing.model.StaffingProcess;
 
 import java.util.List;
 
-@Entity
-public class Client {
+public class ClientDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private String clientName;
-
-    @OneToMany
     private List<StaffingProcess> staffingProcesses;
 
     public void setId(Long id) {
@@ -39,4 +33,5 @@ public class Client {
     public void setStaffingProcesses(List<StaffingProcess> staffingProcesses) {
         this.staffingProcesses = staffingProcesses;
     }
+
 }
