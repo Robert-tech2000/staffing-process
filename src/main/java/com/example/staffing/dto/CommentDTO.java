@@ -1,18 +1,17 @@
 package com.example.staffing.dto;
 
 import com.example.staffing.model.StaffingProcess;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 
 public class CommentDTO {
 
     private Long id;
 
-    private StaffingProcess staffingProcess;
+    private String title;
 
     private String comment;
+
+    private StaffingProcess staffingProcess;
+
 
     private Long commentParent;
 
@@ -30,6 +29,14 @@ public class CommentDTO {
 
     public void setStaffingProcess(StaffingProcess staffingProcess) {
         this.staffingProcess = staffingProcess;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getComment() {

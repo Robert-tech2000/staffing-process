@@ -45,6 +45,12 @@ public class EmployeeController {
     }
 
     @Transactional
+    @PutMapping("/update-employee/")
+    public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody EmployeeDTO employee) {
+        return ResponseEntity.ok(service.updateEmployee(employee));
+    }
+
+    @Transactional
     @DeleteMapping("/delete-employee/{employeeId}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable("employeeId") Long employeeId) {
         service.deleteEmployeeById(employeeId);

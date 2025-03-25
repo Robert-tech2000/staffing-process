@@ -1,5 +1,6 @@
 package com.example.staffing.service;
 
+import com.example.staffing.dto.EmployeeDTO;
 import com.example.staffing.dto.StaffingProcessDTO;
 import com.example.staffing.model.Client;
 import com.example.staffing.model.Employee;
@@ -78,9 +79,14 @@ public class StaffingService {
         return Streamable.of(repository.findAll()).toList().stream().map(this::convertStaffingProcessToDTO).toList();
     }
 
+    public EmployeeDTO updateStaffingProcess(StaffingProcessDTO staffingProcess) {
+        return null;
+    }
+
     public void deleteStaffingProcessById(Long staffingProcessId) {
         logger.info("Delete Staffing Process by ID: {}", staffingProcessId);
         repository.deleteById(staffingProcessId);
     }
+
 
 }

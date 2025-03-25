@@ -1,5 +1,6 @@
 package com.example.staffing.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public class Client {
     private String clientName;
 
     @OneToMany
+    @JsonIgnore
     private List<StaffingProcess> staffingProcesses;
 
     public void setId(Long id) {

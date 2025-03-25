@@ -1,5 +1,7 @@
 package com.example.staffing.controller;
 
+import com.example.staffing.dto.ClientDTO;
+import com.example.staffing.dto.EmployeeDTO;
 import com.example.staffing.dto.StaffingProcessDTO;
 import com.example.staffing.service.StaffingService;
 import jakarta.transaction.Transactional;
@@ -41,6 +43,12 @@ public class StaffingController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(staffingProcesses);
+    }
+
+    @Transactional
+    @PutMapping("/update-staffing-process/")
+    public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody StaffingProcessDTO staffingProcess) {
+        return ResponseEntity.ok(service.updateStaffingProcess(staffingProcess));
     }
 
     @Transactional

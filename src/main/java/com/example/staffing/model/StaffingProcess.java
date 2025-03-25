@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 @Entity
 public class StaffingProcess {
 
+    //@todo: add staffing process title, or generate one on the fly when displaying it in front-end
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

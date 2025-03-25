@@ -39,19 +39,17 @@ public class EmployeeService {
         return Streamable.of(repository.findAll()).toList().stream().map(this::convertEmployeeToDTO).toList();
     }
 
+    public EmployeeDTO updateEmployee(EmployeeDTO employee) {
+        return null;
+    }
+
     public void deleteEmployeeById(Long employeeId) {
         logger.info("Delete employee with ID: {}", employeeId);
         repository.deleteById(employeeId);
     }
 
     private EmployeeDTO convertEmployeeToDTO(Employee employee) {
-        EmployeeDTO employeeDTO = new EmployeeDTO();
-        employeeDTO.setId(employee.getId());
-        employeeDTO.setName(employee.getName());
-        employeeDTO.setAvailable(employee.isAvailable());
-        employeeDTO.setStaffingProcesses(employee.getStaffingProcesses());
-        return employeeDTO;
+        return null;
     }
-
 
 }
