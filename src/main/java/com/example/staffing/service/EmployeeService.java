@@ -49,7 +49,12 @@ public class EmployeeService {
     }
 
     private EmployeeDTO convertEmployeeToDTO(Employee employee) {
-        return null;
+        EmployeeDTO employeeDTO = new EmployeeDTO();
+        employeeDTO.setId(employee.getId());
+        employeeDTO.setName(employee.getName());
+        employeeDTO.setAvailable(employee.isAvailable());
+        employeeDTO.setStaffingProcesses(employee.getStaffingProcesses());
+        return employeeDTO;
     }
 
 }

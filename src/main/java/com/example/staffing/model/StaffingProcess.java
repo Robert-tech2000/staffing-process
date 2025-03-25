@@ -2,10 +2,10 @@ package com.example.staffing.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class StaffingProcess {
-
-    //@todo: add staffing process title, or generate one on the fly when displaying it in front-end
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,6 +18,11 @@ public class StaffingProcess {
     @ManyToOne
     private Employee employee;
 
+    @OneToMany
+    private List<Comment> comments;
+
+    private String title;
+
     private boolean isActive;
 
     public void setId(Long id) {
@@ -26,6 +31,14 @@ public class StaffingProcess {
 
     public Long getId() {
         return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Client getClient() {
@@ -42,6 +55,14 @@ public class StaffingProcess {
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     public boolean isActive() {

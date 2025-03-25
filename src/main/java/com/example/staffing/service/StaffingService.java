@@ -1,5 +1,6 @@
 package com.example.staffing.service;
 
+import com.example.staffing.dto.CommentDTO;
 import com.example.staffing.dto.EmployeeDTO;
 import com.example.staffing.dto.StaffingProcessDTO;
 import com.example.staffing.model.Client;
@@ -32,21 +33,23 @@ public class StaffingService {
     private StaffingProcessDTO convertStaffingProcessToDTO(StaffingProcess staffingProcess) {
         StaffingProcessDTO dto = new StaffingProcessDTO();
         dto.setId(staffingProcess.getId());
+        dto.setTitle(staffingProcess.getTitle());
         dto.setClient(staffingProcess.getClient());
         dto.setEmployee(staffingProcess.getEmployee());
+        dto.setComments(staffingProcess.getComments());
         dto.setActive(staffingProcess.isActive());
 
         return dto;
     }
 
-    public StaffingProcessDTO createStaffingProcess(Long clientID, Long employeeId) {
+    public StaffingProcessDTO createStaffingProcess(Long clientID, Long employeeId, String title) {
         StaffingProcess staffingProcess = new StaffingProcess();
-        //todo: transfer clientID, employeeID or client and employee?
         Client client = clientRepository.findById(clientID).orElseThrow();
         Employee employee = employeeRepository.findById(employeeId).orElseThrow();
 
         staffingProcess.setClient(client);
         staffingProcess.setEmployee(employee);
+        staffingProcess.setTitle(title);
         staffingProcess.setActive(true);
         repository.save(staffingProcess);
         logger.info("Staffing Process created successfully with ID: {}", staffingProcess.getId());
@@ -87,6 +90,5 @@ public class StaffingService {
         logger.info("Delete Staffing Process by ID: {}", staffingProcessId);
         repository.deleteById(staffingProcessId);
     }
-
 
 }

@@ -1,5 +1,6 @@
 package com.example.staffing.dto;
 
+import com.example.staffing.model.Employee;
 import com.example.staffing.model.StaffingProcess;
 
 public class CommentDTO {
@@ -12,6 +13,7 @@ public class CommentDTO {
 
     private StaffingProcess staffingProcess;
 
+    public Employee author;
 
     private Long commentParent;
 
@@ -53,5 +55,13 @@ public class CommentDTO {
 
     public void setCommentParent(Long commentParent) {
         this.commentParent = commentParent;
+    }
+
+    public Employee getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Employee author) {
+        this.author = author;
     }
 }

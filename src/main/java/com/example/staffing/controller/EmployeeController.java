@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+@RequestMapping("/employees")
 public class EmployeeController {
 
     private final EmployeeService service;
@@ -21,12 +22,12 @@ public class EmployeeController {
     }
 
     @Transactional
-    @PostMapping("/add-employee")
+    @PostMapping()
     public ResponseEntity<EmployeeDTO> addEmployee(@RequestParam String name) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createEmployee(name));
     }
 
-    @GetMapping("/get-employee/{employeeId}")
+    @GetMapping("/{employeeId}")
     public ResponseEntity<EmployeeDTO> getEmployee(@PathVariable("employeeId") Long employeeId) {
         EmployeeDTO employee = service.getEmployee(employeeId);
 
@@ -35,7 +36,7 @@ public class EmployeeController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
-    @GetMapping("/get-employee/all-employees")
+    @GetMapping()
     public ResponseEntity<List<EmployeeDTO>> getAllEmployees() {
         List<EmployeeDTO> employees = service.getAllEmployees();
         if (employees.isEmpty()) {
@@ -45,13 +46,13 @@ public class EmployeeController {
     }
 
     @Transactional
-    @PutMapping("/update-employee/")
+    @PutMapping("/{employeeId}")
     public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody EmployeeDTO employee) {
         return ResponseEntity.ok(service.updateEmployee(employee));
     }
 
     @Transactional
-    @DeleteMapping("/delete-employee/{employeeId}")
+    @DeleteMapping("/{employeeId}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable("employeeId") Long employeeId) {
         service.deleteEmployeeById(employeeId);
         return ResponseEntity.noContent().build();

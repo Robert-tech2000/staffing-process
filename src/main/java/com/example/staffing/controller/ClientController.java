@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+@RequestMapping("/clients")
 public class ClientController {
 
     private final ClientService service;
@@ -21,12 +22,12 @@ public class ClientController {
     }
 
     @Transactional
-    @PostMapping("/add-client")
+    @PostMapping()
     public ResponseEntity<ClientDTO> addClient(@RequestParam String name) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createClient(name));
     }
 
-    @GetMapping("/get-client/{clientId}")
+    @GetMapping("/{clientId}")
     public ResponseEntity<ClientDTO> getClient(@PathVariable("clientId") Long clientId) {
         ClientDTO client = service.getClient(clientId);
 
@@ -35,7 +36,7 @@ public class ClientController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
-    @GetMapping("/get-client/all-clients")
+    @GetMapping()
     public ResponseEntity<List<ClientDTO>> getAllClients() {
         List<ClientDTO> clients = service.getAllClients();
         if (clients.isEmpty()) {
@@ -45,13 +46,13 @@ public class ClientController {
     }
 
     @Transactional
-    @PutMapping("/update-client/")
+    @PutMapping("/{clientId}")
     public ResponseEntity<EmployeeDTO> updateClient(@RequestBody ClientDTO client) {
         return ResponseEntity.ok(service.updateClient(client));
     }
 
     @Transactional
-    @DeleteMapping("/delete-client/{clientId}")
+    @DeleteMapping("/{clientId}")
     public ResponseEntity<Void> deleteClient(@PathVariable("clientId") Long clientId) {
         service.deleteClientById(clientId);
         return ResponseEntity.noContent().build();

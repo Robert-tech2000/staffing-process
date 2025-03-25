@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+@RequestMapping("/comments")
 public class CommentController {
 
     private final CommentService service;
@@ -20,7 +21,7 @@ public class CommentController {
     }
 
     @Transactional
-    @PostMapping("/add-comment")
+    @PostMapping()
     public ResponseEntity<CommentDTO> addEmployee(
             @RequestParam String title,
             @RequestParam String comment,
@@ -29,7 +30,7 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.addComment(title, comment, staffingProcessId, parentCommentId));
     }
 
-    @GetMapping("/get-comment/{commentId}")
+    @GetMapping("/{commentId}")
     public ResponseEntity<CommentDTO> getComment(@PathVariable("commentId") Long commentId) {
         CommentDTO comment = service.getComment(commentId);
 
@@ -38,7 +39,7 @@ public class CommentController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
-    @GetMapping("/get-comment/all-comments")
+    @GetMapping()
     public ResponseEntity<List<CommentDTO>> getAllComments() {
         List<CommentDTO> comments = service.getAllComments();
         if (comments.isEmpty()) {
@@ -48,13 +49,13 @@ public class CommentController {
     }
 
     @Transactional
-    @PutMapping("/update-comment/")
+    @PutMapping("/{commentId}")
     public ResponseEntity<CommentDTO> updateComment(@RequestBody CommentDTO comment) {
         return ResponseEntity.ok(service.updateComment(comment));
     }
 
     @Transactional
-    @DeleteMapping("/delete-comment/{clientId}")
+    @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable("clientId") Long commentId) {
         service.deleteComment(commentId);
         return ResponseEntity.noContent().build();

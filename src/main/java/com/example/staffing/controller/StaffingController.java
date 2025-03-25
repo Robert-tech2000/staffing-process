@@ -1,6 +1,6 @@
 package com.example.staffing.controller;
 
-import com.example.staffing.dto.ClientDTO;
+import com.example.staffing.dto.CommentDTO;
 import com.example.staffing.dto.EmployeeDTO;
 import com.example.staffing.dto.StaffingProcessDTO;
 import com.example.staffing.service.StaffingService;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+@RequestMapping("/staffing-processes")
 public class StaffingController {
 
     private final StaffingService service;
@@ -22,13 +23,13 @@ public class StaffingController {
     }
 
     @Transactional
-    @PostMapping("/add-staffing-process")
-    public ResponseEntity<StaffingProcessDTO> addStaffingProcess(@RequestParam Long clientID, @RequestParam Long employeeId) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.createStaffingProcess(clientID, employeeId));
+    @PostMapping()
+    public ResponseEntity<StaffingProcessDTO> addStaffingProcess(@RequestParam Long clientID, @RequestParam Long employeeId, @RequestParam String title) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.createStaffingProcess(clientID, employeeId, title));
     }
 
-    @GetMapping("/get-staffing-process/{staffingProcessId}")
-    public ResponseEntity<StaffingProcessDTO> getClient(@PathVariable("staffingProcessId") Long staffingProcessId) {
+    @GetMapping("/{staffingProcessId}")
+    public ResponseEntity<StaffingProcessDTO> getStaffingProcess(@PathVariable("staffingProcessId") Long staffingProcessId) {
         StaffingProcessDTO staffingProcess = service.getStaffingProcess(staffingProcessId);
 
         return staffingProcess.getId() != null
@@ -36,7 +37,7 @@ public class StaffingController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
-    @GetMapping("/get-staffing-process/all-staffing-processes")
+    @GetMapping()
     public ResponseEntity<List<StaffingProcessDTO>> getAllStaffingProcesses() {
         List<StaffingProcessDTO> staffingProcesses = service.getAllStaffingProcesses();
         if (staffingProcesses.isEmpty()) {
@@ -46,13 +47,13 @@ public class StaffingController {
     }
 
     @Transactional
-    @PutMapping("/update-staffing-process/")
+    @PutMapping("/{staffingProcessId}")
     public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody StaffingProcessDTO staffingProcess) {
         return ResponseEntity.ok(service.updateStaffingProcess(staffingProcess));
     }
 
     @Transactional
-    @DeleteMapping("/delete-staffng-process/{staffingProcessId}")
+    @DeleteMapping("/{staffingProcessId}")
     public ResponseEntity<Void> deleteClient(@PathVariable("staffingProcessId") Long staffingProcessId) {
         service.deleteStaffingProcessById(staffingProcessId);
         return ResponseEntity.noContent().build();

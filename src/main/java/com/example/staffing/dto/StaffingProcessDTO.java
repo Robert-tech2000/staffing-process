@@ -1,16 +1,22 @@
 package com.example.staffing.dto;
 
 import com.example.staffing.model.Client;
+import com.example.staffing.model.Comment;
 import com.example.staffing.model.Employee;
-import jakarta.persistence.*;
+
+import java.util.List;
 
 public class StaffingProcessDTO {
 
     private Long id;
 
+    private String title;
+
     private Client client;
 
     private Employee employee;
+
+    private List<Comment> comments;
 
     private boolean isActive;
 
@@ -36,6 +42,22 @@ public class StaffingProcessDTO {
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public boolean isActive() {

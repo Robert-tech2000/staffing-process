@@ -1,5 +1,6 @@
 package com.example.staffing.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,7 +11,12 @@ public class Comment {
     private Long id;
 
     @ManyToOne
+    @JsonIgnore
     private StaffingProcess staffingProcess;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    public Employee author;
 
     private String title;
 
@@ -25,8 +31,6 @@ public class Comment {
     public Long getId() {
         return id;
     }
-
-    // todo: add commenter ? Is person who added comment employee or admin, or other role ?
 
     public StaffingProcess getStaffingProcess() {
         return staffingProcess;
@@ -58,5 +62,13 @@ public class Comment {
 
     public void setCommentParent(Long commentParent) {
         this.commentParent = commentParent;
+    }
+
+    public Employee getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Employee author) {
+        this.author = author;
     }
 }
