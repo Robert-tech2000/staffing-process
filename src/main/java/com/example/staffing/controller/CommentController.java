@@ -5,6 +5,7 @@ import com.example.staffing.service.CommentService;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,8 @@ public class CommentController {
 
     @Transactional
     @PostMapping()
-    public ResponseEntity<CommentDTO> addEmployee(
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<CommentDTO> addComment(
             @RequestParam String title,
             @RequestParam String comment,
             @RequestParam("staff_process_id") Long staffingProcessId,
@@ -31,6 +33,7 @@ public class CommentController {
     }
 
     @GetMapping("/{commentId}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CommentDTO> getComment(@PathVariable("commentId") Long commentId) {
         CommentDTO comment = service.getComment(commentId);
 
@@ -40,6 +43,7 @@ public class CommentController {
     }
 
     @GetMapping()
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<CommentDTO>> getAllComments() {
         List<CommentDTO> comments = service.getAllComments();
         if (comments.isEmpty()) {
@@ -50,12 +54,14 @@ public class CommentController {
 
     @Transactional
     @PutMapping("/{commentId}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CommentDTO> updateComment(@RequestBody CommentDTO comment) {
         return ResponseEntity.ok(service.updateComment(comment));
     }
 
     @Transactional
     @DeleteMapping("/{commentId}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deleteComment(@PathVariable("clientId") Long commentId) {
         service.deleteComment(commentId);
         return ResponseEntity.noContent().build();

@@ -6,6 +6,7 @@ import com.example.staffing.service.ClientService;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,11 +24,13 @@ public class ClientController {
 
     @Transactional
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ClientDTO> addClient(@RequestParam String name) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createClient(name));
     }
 
     @GetMapping("/{clientId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ClientDTO> getClient(@PathVariable("clientId") Long clientId) {
         ClientDTO client = service.getClient(clientId);
 
@@ -37,6 +40,7 @@ public class ClientController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ClientDTO>> getAllClients() {
         List<ClientDTO> clients = service.getAllClients();
         if (clients.isEmpty()) {
@@ -47,12 +51,14 @@ public class ClientController {
 
     @Transactional
     @PutMapping("/{clientId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EmployeeDTO> updateClient(@RequestBody ClientDTO client) {
         return ResponseEntity.ok(service.updateClient(client));
     }
 
     @Transactional
     @DeleteMapping("/{clientId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteClient(@PathVariable("clientId") Long clientId) {
         service.deleteClientById(clientId);
         return ResponseEntity.noContent().build();

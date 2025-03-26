@@ -7,6 +7,7 @@ import com.example.staffing.service.StaffingService;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,11 +25,13 @@ public class StaffingController {
 
     @Transactional
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StaffingProcessDTO> addStaffingProcess(@RequestParam Long clientID, @RequestParam Long employeeId, @RequestParam String title) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createStaffingProcess(clientID, employeeId, title));
     }
 
     @GetMapping("/{staffingProcessId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StaffingProcessDTO> getStaffingProcess(@PathVariable("staffingProcessId") Long staffingProcessId) {
         StaffingProcessDTO staffingProcess = service.getStaffingProcess(staffingProcessId);
 
@@ -38,6 +41,7 @@ public class StaffingController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<StaffingProcessDTO>> getAllStaffingProcesses() {
         List<StaffingProcessDTO> staffingProcesses = service.getAllStaffingProcesses();
         if (staffingProcesses.isEmpty()) {
@@ -48,12 +52,14 @@ public class StaffingController {
 
     @Transactional
     @PutMapping("/{staffingProcessId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody StaffingProcessDTO staffingProcess) {
         return ResponseEntity.ok(service.updateStaffingProcess(staffingProcess));
     }
 
     @Transactional
     @DeleteMapping("/{staffingProcessId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteClient(@PathVariable("staffingProcessId") Long staffingProcessId) {
         service.deleteStaffingProcessById(staffingProcessId);
         return ResponseEntity.noContent().build();

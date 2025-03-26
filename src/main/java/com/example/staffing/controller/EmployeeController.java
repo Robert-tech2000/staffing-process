@@ -6,6 +6,7 @@ import com.example.staffing.service.EmployeeService;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,11 +24,13 @@ public class EmployeeController {
 
     @Transactional
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EmployeeDTO> addEmployee(@RequestParam String name) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createEmployee(name));
     }
 
     @GetMapping("/{employeeId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EmployeeDTO> getEmployee(@PathVariable("employeeId") Long employeeId) {
         EmployeeDTO employee = service.getEmployee(employeeId);
 
@@ -37,6 +40,7 @@ public class EmployeeController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<EmployeeDTO>> getAllEmployees() {
         List<EmployeeDTO> employees = service.getAllEmployees();
         if (employees.isEmpty()) {
@@ -47,12 +51,14 @@ public class EmployeeController {
 
     @Transactional
     @PutMapping("/{employeeId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody EmployeeDTO employee) {
         return ResponseEntity.ok(service.updateEmployee(employee));
     }
 
     @Transactional
     @DeleteMapping("/{employeeId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteEmployee(@PathVariable("employeeId") Long employeeId) {
         service.deleteEmployeeById(employeeId);
         return ResponseEntity.noContent().build();

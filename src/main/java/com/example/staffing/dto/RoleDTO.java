@@ -1,15 +1,8 @@
-package com.example.staffing.model;
+package com.example.staffing.dto;
 
-import jakarta.persistence.*;
+public class RoleDTO {
 
-@Entity
-public class Role {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @Column(unique = true)
     private String name;
 
     public void setId(Long id) {
