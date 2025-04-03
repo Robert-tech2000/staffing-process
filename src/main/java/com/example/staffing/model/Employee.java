@@ -18,6 +18,9 @@ public class Employee {
     @JsonIgnore
     private List<StaffingProcess> staffingProcesses;
 
+    @OneToOne
+    private User user;
+
     public Employee(String name, boolean isAvailable) {
         this.name = name;
         this.isAvailable = isAvailable;
@@ -56,5 +59,13 @@ public class Employee {
 
     public void setAvailable(boolean available) {
         isAvailable = available;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
