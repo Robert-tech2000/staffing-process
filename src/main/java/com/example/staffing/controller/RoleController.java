@@ -25,13 +25,11 @@ public class RoleController {
 
     @Transactional
     @PostMapping()
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoleDTO> addRole(@RequestParam String roleName) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createRole(roleName));
     }
 
     @GetMapping()
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RoleDTO>> getAllEmployees() {
         List<RoleDTO> roles = service.getAllRoles();
         if (roles.isEmpty()) {
@@ -42,14 +40,12 @@ public class RoleController {
 
     @Transactional
     @PutMapping("/{roleId}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody RoleDTO role) {
         return ResponseEntity.ok(service.updateRole(role));
     }
 
     @Transactional
     @DeleteMapping("/{roleId}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteEmployee(@PathVariable("roleId") Long roleId) {
         service.deleteRoleById(roleId);
         return ResponseEntity.noContent().build();

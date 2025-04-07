@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class KeycloakRoleConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
 
-    private static final String CLIENT_NAME_PUBLIC = "public-oauth2-staffing-process-client";
+    private static final String PUBLIC_CLIENT_NAME = "public-oauth2-staffing-process-client";
 
     @Override
     public Collection<GrantedAuthority> convert(Jwt jwt) {
@@ -32,7 +32,7 @@ public class KeycloakRoleConverter implements Converter<Jwt, Collection<GrantedA
         // Extract client roles
         Map<String, Object> resourceAccess = (Map<String, Object>) jwt.getClaims().get("resource_access");
         if (resourceAccess != null) {
-            Map<String, Object> client = (Map<String, Object>) resourceAccess.get(CLIENT_NAME_PUBLIC);
+            Map<String, Object> client = (Map<String, Object>) resourceAccess.get(PUBLIC_CLIENT_NAME);
             if (client != null && client.containsKey("roles")) {
                 List<String> clientRoles = (List<String>) client.get("roles");
                 authorities.addAll(clientRoles.stream()

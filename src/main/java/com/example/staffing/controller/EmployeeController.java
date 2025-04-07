@@ -24,13 +24,11 @@ public class EmployeeController {
 
     @Transactional
     @PostMapping()
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EmployeeDTO> addEmployee(@RequestParam String name) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createEmployee(name));
     }
 
     @GetMapping("/{employeeId}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EmployeeDTO> getEmployee(@PathVariable("employeeId") Long employeeId) {
         EmployeeDTO employee = service.getEmployee(employeeId);
 
@@ -40,7 +38,6 @@ public class EmployeeController {
     }
 
     @GetMapping()
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<EmployeeDTO>> getAllEmployees() {
         List<EmployeeDTO> employees = service.getAllEmployees();
         if (employees.isEmpty()) {
@@ -51,14 +48,12 @@ public class EmployeeController {
 
     @Transactional
     @PutMapping("/{employeeId}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody EmployeeDTO employee) {
         return ResponseEntity.ok(service.updateEmployee(employee));
     }
 
     @Transactional
     @DeleteMapping("/{employeeId}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteEmployee(@PathVariable("employeeId") Long employeeId) {
         service.deleteEmployeeById(employeeId);
         return ResponseEntity.noContent().build();

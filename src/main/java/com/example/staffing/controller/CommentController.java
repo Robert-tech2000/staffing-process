@@ -23,7 +23,6 @@ public class CommentController {
 
     @Transactional
     @PostMapping()
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CommentDTO> addComment(
             @RequestParam String title,
             @RequestParam String comment,
@@ -33,7 +32,6 @@ public class CommentController {
     }
 
     @GetMapping("/{commentId}")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CommentDTO> getComment(@PathVariable("commentId") Long commentId) {
         CommentDTO comment = service.getComment(commentId);
 
@@ -43,7 +41,6 @@ public class CommentController {
     }
 
     @GetMapping()
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<CommentDTO>> getAllComments() {
         List<CommentDTO> comments = service.getAllComments();
         if (comments.isEmpty()) {
@@ -54,14 +51,12 @@ public class CommentController {
 
     @Transactional
     @PutMapping("/{commentId}")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CommentDTO> updateComment(@RequestBody CommentDTO comment) {
         return ResponseEntity.ok(service.updateComment(comment));
     }
 
     @Transactional
     @DeleteMapping("/{commentId}")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deleteComment(@PathVariable("clientId") Long commentId) {
         service.deleteComment(commentId);
         return ResponseEntity.noContent().build();
