@@ -8,12 +8,30 @@ services:
       - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: pass
-      MYSQL_DATABASE: staffin_process
+      MYSQL_DATABASE: staffing_process
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 5
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.1
+    container_name: keycloak
+    command: start-dev --import-realm
+    environment:
+      KC_DB: dev-file
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - 8081:8080
+    volumes:
+      - ./docker/oauth2-staffing-process-realm-export.json.json:/opt/keycloak/data/import/oauth2-staffing-process-realm-export.json.json
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/realms/master" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   staffingProcessService:
     image: staffing-process
@@ -22,7 +40,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      keycloak:
+        condition: service_healthy
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/staffin_process
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/staffing_process
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=pass
+      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://keycloak:8080/realms/oauth2-staffing-process-realm
+      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_REDIRECT_URI=http://localhost:8080/login/oauth2/code/keycloak
+
