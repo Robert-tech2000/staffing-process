@@ -1,23 +1,12 @@
 package com.example.staffing.dto;
 
-public class RoleDTO {
+import com.example.staffing.util.AbstractEntity;
+import lombok.Getter;
+import lombok.Setter;
 
-    private Long id;
+@Getter
+@Setter
+public class RoleDTO extends AbstractEntity {
+
     private String name;
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

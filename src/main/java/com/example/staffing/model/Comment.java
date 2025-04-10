@@ -1,5 +1,6 @@
 package com.example.staffing.model;
 
+import com.example.staffing.util.AbstractEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,11 +10,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Comment {
+public class Comment  extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
     private String title;
     private String comment;
 

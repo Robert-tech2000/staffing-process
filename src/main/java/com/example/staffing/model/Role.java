@@ -1,5 +1,6 @@
 package com.example.staffing.model;
 
+import com.example.staffing.util.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,11 +8,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Role {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class Role  extends AbstractEntity {
 
     @Column(unique = true, nullable = false)
     private String name;

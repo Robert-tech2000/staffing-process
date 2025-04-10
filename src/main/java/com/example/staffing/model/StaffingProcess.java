@@ -1,5 +1,6 @@
 package com.example.staffing.model;
 
+import com.example.staffing.util.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,11 +10,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class StaffingProcess {
+public class StaffingProcess extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
     private String title;
     private boolean isActive;
 

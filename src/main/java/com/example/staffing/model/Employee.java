@@ -1,5 +1,6 @@
 package com.example.staffing.model;
 
+import com.example.staffing.util.AbstractEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -11,11 +12,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Employee {
+public class Employee extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
     private String name;
     private boolean isAvailable = true;
 
