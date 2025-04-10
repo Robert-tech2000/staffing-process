@@ -5,7 +5,12 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
+@Getter
+@Setter
 public class Employee {
 
     @Id
@@ -29,43 +34,4 @@ public class Employee {
     public Employee() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public List<StaffingProcess> getStaffingProcesses() {
-        return staffingProcesses;
-    }
-
-    public void setStaffingProcesses(List<StaffingProcess> staffingProcesses) {
-        this.staffingProcesses = staffingProcesses;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isAvailable() {
-        return isAvailable;
-    }
-
-    public void setAvailable(boolean available) {
-        isAvailable = available;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 }

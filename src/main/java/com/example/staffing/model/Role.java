@@ -1,8 +1,12 @@
 package com.example.staffing.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class Role {
 
     @Id
@@ -12,19 +16,4 @@ public class Role {
     @Column(unique = true, nullable = false)
     private String name;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }
