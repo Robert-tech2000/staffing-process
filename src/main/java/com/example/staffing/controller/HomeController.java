@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
 
     @GetMapping("/home")
-    @PreAuthorize("hasRole('ROLE_CLIENT_PUBLIC_USER')")
     public ResponseEntity<String> home() {
         return ResponseEntity.ok("Public Staffing Application Home Page");
     }

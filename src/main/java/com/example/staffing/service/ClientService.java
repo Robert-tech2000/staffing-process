@@ -46,8 +46,12 @@ public class ClientService {
         repository.deleteById(clientId);
     }
 
-    public EmployeeDTO updateClient(ClientDTO client) {
-        return null;
+    public ClientDTO updateClient(ClientDTO client) {
+        Client clientToUpdate = repository.findById(client.getId()).orElseThrow();
+        clientToUpdate.setClientName(client.getClientName());
+        clientToUpdate = repository.save(clientToUpdate);
+
+        return convertClientToDTO(clientToUpdate);
     }
 
     private ClientDTO convertClientToDTO(Client client) {

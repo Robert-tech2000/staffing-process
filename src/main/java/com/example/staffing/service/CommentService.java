@@ -1,6 +1,7 @@
 package com.example.staffing.service;
 
 import com.example.staffing.dto.CommentDTO;
+import com.example.staffing.model.Client;
 import com.example.staffing.model.Comment;
 import com.example.staffing.model.StaffingProcess;
 import com.example.staffing.repository.CommentRepository;
@@ -58,7 +59,11 @@ public class CommentService {
     }
 
     public CommentDTO updateComment(CommentDTO comment) {
-        return null;
+        Comment commentToUpdate = repository.findById(comment.getId()).orElseThrow();
+        commentToUpdate.setComment(comment.getComment());
+        commentToUpdate = repository.save(commentToUpdate);
+
+        return convertCommentToDTO(commentToUpdate);
     }
 
     public void deleteComment(Long commentId) {

@@ -1,7 +1,5 @@
 package com.example.staffing.service;
 
-import com.example.staffing.dto.CommentDTO;
-import com.example.staffing.dto.EmployeeDTO;
 import com.example.staffing.dto.StaffingProcessDTO;
 import com.example.staffing.model.Client;
 import com.example.staffing.model.Employee;
@@ -28,18 +26,6 @@ public class StaffingService {
         this.repository = repository;
         this.clientRepository = clientRepository;
         this.employeeRepository = employeeRepository;
-    }
-
-    private StaffingProcessDTO convertStaffingProcessToDTO(StaffingProcess staffingProcess) {
-        StaffingProcessDTO dto = new StaffingProcessDTO();
-        dto.setId(staffingProcess.getId());
-        dto.setTitle(staffingProcess.getTitle());
-        dto.setClient(staffingProcess.getClient());
-        dto.setEmployee(staffingProcess.getEmployee());
-        dto.setComments(staffingProcess.getComments());
-        dto.setActive(staffingProcess.isActive());
-
-        return dto;
     }
 
     public StaffingProcessDTO createStaffingProcess(Long clientID, Long employeeId, String title) {
@@ -82,13 +68,30 @@ public class StaffingService {
         return Streamable.of(repository.findAll()).toList().stream().map(this::convertStaffingProcessToDTO).toList();
     }
 
-    public EmployeeDTO updateStaffingProcess(StaffingProcessDTO staffingProcess) {
-        return null;
+    public StaffingProcessDTO updateStaffingProcess(StaffingProcessDTO staffingProcess) {
+        StaffingProcess staffingProcessToUpdate = repository.findById(staffingProcess.getId()).orElseThrow();
+        staffingProcessToUpdate.setActive(staffingProcess.isActive());
+        staffingProcessToUpdate.setTitle(staffingProcess.getTitle());
+        staffingProcessToUpdate = repository.save(staffingProcessToUpdate);
+
+        return convertStaffingProcessToDTO(staffingProcessToUpdate);
     }
 
     public void deleteStaffingProcessById(Long staffingProcessId) {
         logger.info("Delete Staffing Process by ID: {}", staffingProcessId);
         repository.deleteById(staffingProcessId);
+    }
+
+    private StaffingProcessDTO convertStaffingProcessToDTO(StaffingProcess staffingProcess) {
+        StaffingProcessDTO dto = new StaffingProcessDTO();
+        dto.setId(staffingProcess.getId());
+        dto.setTitle(staffingProcess.getTitle());
+        dto.setClient(staffingProcess.getClient());
+        dto.setEmployee(staffingProcess.getEmployee());
+        dto.setComments(staffingProcess.getComments());
+        dto.setActive(staffingProcess.isActive());
+
+        return dto;
     }
 
 }

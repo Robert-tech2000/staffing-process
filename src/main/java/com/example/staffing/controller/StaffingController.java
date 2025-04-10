@@ -49,7 +49,7 @@ public class StaffingController {
 
     @Transactional
     @PutMapping("/{staffingProcessId}")
-    public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody StaffingProcessDTO staffingProcess) {
+    public ResponseEntity<StaffingProcessDTO> updateEmployee(@RequestBody StaffingProcessDTO staffingProcess) {
         return ResponseEntity.ok(service.updateStaffingProcess(staffingProcess));
     }
 

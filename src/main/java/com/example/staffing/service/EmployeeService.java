@@ -2,6 +2,7 @@ package com.example.staffing.service;
 
 
 import com.example.staffing.dto.EmployeeDTO;
+import com.example.staffing.model.Client;
 import com.example.staffing.model.Employee;
 import com.example.staffing.repository.EmployeeRepository;
 import org.slf4j.Logger;
@@ -40,7 +41,12 @@ public class EmployeeService {
     }
 
     public EmployeeDTO updateEmployee(EmployeeDTO employee) {
-        return null;
+        Employee employeeToUpdate = repository.findById(employee.getId()).orElseThrow();
+        employeeToUpdate.setAvailable(employee.isAvailable());
+        employeeToUpdate.setName(employee.getName());
+        employeeToUpdate = repository.save(employeeToUpdate);
+
+        return convertEmployeeToDTO(employeeToUpdate);
     }
 
     public void deleteEmployeeById(Long employeeId) {
