@@ -1,7 +1,6 @@
 package com.example.staffing.service;
 
 import com.example.staffing.dto.CommentDTO;
-import com.example.staffing.model.Client;
 import com.example.staffing.model.Comment;
 import com.example.staffing.model.StaffingProcess;
 import com.example.staffing.repository.CommentRepository;

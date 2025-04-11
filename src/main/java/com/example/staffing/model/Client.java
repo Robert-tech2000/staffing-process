@@ -2,7 +2,8 @@ package com.example.staffing.model;
 
 import com.example.staffing.util.AbstractEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 

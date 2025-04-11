@@ -2,7 +2,6 @@ package com.example.staffing.service;
 
 
 import com.example.staffing.dto.EmployeeDTO;
-import com.example.staffing.model.Client;
 import com.example.staffing.model.Employee;
 import com.example.staffing.repository.EmployeeRepository;
 import org.slf4j.Logger;

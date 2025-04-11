@@ -1,7 +1,10 @@
 package com.example.staffing.model;
 
 import com.example.staffing.util.AbstractEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 
