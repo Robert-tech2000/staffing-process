@@ -1,6 +1,5 @@
 package com.example.staffing.dto;
 
-import com.example.staffing.model.StaffingProcess;
 import com.example.staffing.util.AbstractEntity;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,5 +12,5 @@ public class EmployeeDTO extends AbstractEntity {
 
     private String name;
     private boolean isAvailable = true;
-    private List<StaffingProcess> staffingProcesses;
+    private List<StaffingProcessDTO> staffingProcesses;
 }
