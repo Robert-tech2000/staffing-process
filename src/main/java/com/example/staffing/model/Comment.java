@@ -23,7 +23,7 @@ public class Comment  extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name = "author_id")
-    public Employee author;
+    public User author;
 
     private Long commentParent;
 

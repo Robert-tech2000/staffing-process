@@ -22,8 +22,8 @@ public class StaffingController {
 
     @Transactional
     @PostMapping()
-    public ResponseEntity<StaffingProcessDTO> addStaffingProcess(@RequestParam Long clientID, @RequestParam Long employeeId, @RequestParam String title) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.createStaffingProcess(clientID, employeeId, title));
+    public ResponseEntity<StaffingProcessDTO> addStaffingProcess(@RequestBody StaffingProcessDTO staffingProcess) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.createStaffingProcess(staffingProcess.getClient().getId(), staffingProcess.getEmployee().getId(), staffingProcess.getTitle()));
     }
 
     @GetMapping("/{staffingProcessId}")

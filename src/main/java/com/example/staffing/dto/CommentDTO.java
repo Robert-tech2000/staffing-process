@@ -1,6 +1,6 @@
 package com.example.staffing.dto;
 
-import com.example.staffing.model.Employee;
+import com.example.staffing.model.User;
 import com.example.staffing.model.StaffingProcess;
 import com.example.staffing.util.AbstractEntity;
 import lombok.Getter;
@@ -13,7 +13,7 @@ public class CommentDTO extends AbstractEntity {
     private String title;
     private String comment;
     private StaffingProcess staffingProcess;
-    public Employee author;
+    public User author;
     private Long commentParent;
 
 }

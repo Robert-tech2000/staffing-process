@@ -33,14 +33,14 @@ public class SecurityConfig {
 
         // Configure CORS and HTTP security
         http.cors(corsCustomizer)
-//                .authorizeRequests(authz -> authz
-//                        .requestMatchers("/api/public/**").permitAll()  // Public API routes
-//                        .anyRequest().authenticated()  // All other routes require authentication
-//                )
-//                .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
-//                        .jwt(jwt -> jwt
-//                                .jwtAuthenticationConverter(jwtAuthConverter())) // Configure JWT authentication converter
-//                )
+                .authorizeRequests(authz -> authz
+                        .requestMatchers("/api/public/**").permitAll()  // Public API routes
+                        .anyRequest().authenticated()  // All other routes require authentication
+                )
+                .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
+                        .jwt(jwt -> jwt
+                                .jwtAuthenticationConverter(jwtAuthConverter())) // Configure JWT authentication converter
+                )
                 .csrf(AbstractHttpConfigurer::disable)  // Disable CSRF protection as it's stateless
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // Stateless session

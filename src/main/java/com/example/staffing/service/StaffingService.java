@@ -2,11 +2,11 @@ package com.example.staffing.service;
 
 import com.example.staffing.dto.StaffingProcessDTO;
 import com.example.staffing.model.Client;
-import com.example.staffing.model.Employee;
 import com.example.staffing.model.StaffingProcess;
+import com.example.staffing.model.User;
 import com.example.staffing.repository.ClientRepository;
-import com.example.staffing.repository.EmployeeRepository;
 import com.example.staffing.repository.StaffingProcessRepository;
+import com.example.staffing.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.util.Streamable;
@@ -19,19 +19,19 @@ public class StaffingService {
 
     private final StaffingProcessRepository repository;
     private final ClientRepository clientRepository;
-    private final EmployeeRepository employeeRepository;
     private static final Logger logger = LoggerFactory.getLogger(StaffingService.class);
+    private final UserRepository userRepository;
 
-    public StaffingService(StaffingProcessRepository repository, ClientRepository clientRepository, EmployeeRepository employeeRepository) {
+    public StaffingService(StaffingProcessRepository repository, ClientRepository clientRepository, UserRepository userRepository) {
         this.repository = repository;
         this.clientRepository = clientRepository;
-        this.employeeRepository = employeeRepository;
+        this.userRepository = userRepository;
     }
 
     public StaffingProcessDTO createStaffingProcess(Long clientID, Long employeeId, String title) {
         StaffingProcess staffingProcess = new StaffingProcess();
         Client client = clientRepository.findById(clientID).orElseThrow();
-        Employee employee = employeeRepository.findById(employeeId).orElseThrow();
+        User employee = userRepository.findById(employeeId).orElseThrow();
 
         staffingProcess.setClient(client);
         staffingProcess.setEmployee(employee);
@@ -44,7 +44,7 @@ public class StaffingService {
         return convertStaffingProcessToDTO(staffingProcess);
     }
 
-    private void updateEmployeeAndClientStaffingProcesses(Employee employee, Client client, StaffingProcess staffingProcess) {
+    private void updateEmployeeAndClientStaffingProcesses(User employee, Client client, StaffingProcess staffingProcess) {
         List<StaffingProcess> existingEmployeeStaffingProcesses = employee.getStaffingProcesses();
         existingEmployeeStaffingProcesses.add(staffingProcess);
         employee.setStaffingProcesses(existingEmployeeStaffingProcesses);
@@ -53,7 +53,7 @@ public class StaffingService {
         existingClientStaffingProcesses.add(staffingProcess);
         client.setStaffingProcesses(existingClientStaffingProcesses);
 
-        employeeRepository.save(employee);
+        userRepository.save(employee);
         clientRepository.save(client);
     }
 
