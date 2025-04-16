@@ -44,10 +44,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/employees/**").hasAuthority(PUBLIC_CLIENT_ADMIN_ROLE)
                         .requestMatchers(HttpMethod.DELETE, "/employees/**").hasAuthority(PUBLIC_CLIENT_ADMIN_ROLE)
 
-                        .requestMatchers(HttpMethod.POST, "/staffing-processes/**").hasAuthority(PUBLIC_CLIENT_ADMIN_ROLE)
-                        .requestMatchers(HttpMethod.PUT, "/staffing-processes/**").hasAuthority(PUBLIC_CLIENT_ADMIN_ROLE)
-                        .requestMatchers(HttpMethod.DELETE, "/staffing-processes/**").hasAuthority(PUBLIC_CLIENT_ADMIN_ROLE)
-
                         .requestMatchers("/home-admin/**").hasAuthority(PUBLIC_CLIENT_ADMIN_ROLE)
                         .anyRequest().hasAuthority(PUBLIC_CLIENT_USER_ROLE)
                 )
