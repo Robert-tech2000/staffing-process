@@ -20,16 +20,6 @@ public class CommentController {
         this.service = service;
     }
 
-    @Transactional
-    @PostMapping()
-    public ResponseEntity<CommentDTO> addComment(
-            @RequestParam String title,
-            @RequestParam String comment,
-            @RequestParam("staff_process_id") Long staffingProcessId,
-            @RequestParam(value = "comment_id", required = false) Long parentCommentId) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.addComment(title, comment, staffingProcessId, parentCommentId));
-    }
-
     @GetMapping("/{commentId}")
     public ResponseEntity<CommentDTO> getComment(@PathVariable("commentId") Long commentId) {
         CommentDTO comment = service.getComment(commentId);

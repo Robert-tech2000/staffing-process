@@ -21,9 +21,13 @@ public class ClientService {
         this.repository = repository1;
     }
 
-    public ClientDTO createClient(String name) {
+    public ClientDTO createClient(ClientDTO name) {
         Client client = new Client();
-        client.setClientName(name);
+        client.setClientName(name.getClientName());
+        client.setClientEmail(name.getClientEmail());
+        client.setContactPersonEmail(name.getContactPersonEmail());
+        client.setContactPersonName(name.getContactPersonName());
+        client.setContactPersonPhone(name.getContactPersonPhone());
         repository.save(client);
         logger.info("Client created successfully with ID: {}", client.getId());
         return convertClientToDTO(client);
@@ -57,6 +61,10 @@ public class ClientService {
         ClientDTO clientDTO = new ClientDTO();
         clientDTO.setId(client.getId());
         clientDTO.setClientName(client.getClientName());
+        clientDTO.setClientEmail(client.getClientEmail());
+        clientDTO.setContactPersonPhone(client.getContactPersonPhone());
+        clientDTO.setContactPersonEmail(client.getContactPersonEmail());
+        clientDTO.setContactPersonName(client.getContactPersonName());
         clientDTO.setStaffingProcesses(client.getStaffingProcesses());
         return clientDTO;
     }

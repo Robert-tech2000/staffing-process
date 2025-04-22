@@ -25,7 +25,7 @@ public class StaffingProcess extends AbstractEntity {
     @ManyToOne
     private User employee;
 
-    @OneToMany
+    @OneToMany(mappedBy = "staffingProcess")
     private List<Comment> comments;
 
 }

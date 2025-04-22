@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
@@ -49,10 +50,21 @@ public class JwtInterceptor implements HandlerInterceptor {
             return false;
         }
 
+        return !getUserFromToken(jwt);
+    }
+
+    public User getCurrentUser() {
+        return userRepository.findByUsername(currentUser.getUsername()).orElseGet(() -> {
+            log.warn("User not found in database, returning null.");
+            return null;
+        });
+    }
+
+    private boolean getUserFromToken(Jwt jwt) {
         String username = jwt.getClaimAsString("preferred_username");
         if (username == null) {
             log.warn("No username found in JWT.");
-            return false;
+            return true;
         }
 
         this.currentUser = userRepository.findByUsername(username).orElseGet(() -> {
@@ -76,8 +88,7 @@ public class JwtInterceptor implements HandlerInterceptor {
             }
             return userRepository.save(newUser);
         });
-
-        return true;
+        return false;
     }
 
 }

@@ -23,7 +23,7 @@ public class ClientController {
     @Transactional
     @PostMapping()
     public ResponseEntity<ClientDTO> addClient(@RequestBody ClientDTO client) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.createClient(client.getClientName()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.createClient(client));
     }
 
     @GetMapping("/{clientId}")

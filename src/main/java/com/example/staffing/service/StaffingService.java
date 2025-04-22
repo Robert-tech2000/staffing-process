@@ -9,8 +9,10 @@ import com.example.staffing.repository.StaffingProcessRepository;
 import com.example.staffing.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -92,6 +94,14 @@ public class StaffingService {
         dto.setActive(staffingProcess.isActive());
 
         return dto;
+    }
+
+    @Transactional
+    public void setInactive(Long id) throws ChangeSetPersister.NotFoundException {
+        StaffingProcess process = repository.findById(id)
+                .orElseThrow(ChangeSetPersister.NotFoundException::new);
+        process.setActive(false);
+        repository.save(process);
     }
 
 }
