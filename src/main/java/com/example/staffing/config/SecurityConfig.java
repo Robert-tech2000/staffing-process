@@ -4,15 +4,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
 @EnableMethodSecurity
@@ -34,7 +36,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         System.out.println("✅ SecurityFilterChain is being initialized!");
-        http
+        Customizer<CorsConfigurer<HttpSecurity>> corsCustomizer = cors -> cors
+                .configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.addAllowedOrigin("http://localhost:4200");
+                    config.addAllowedMethod("*");
+                    config.addAllowedHeader("*");
+                    config.setAllowCredentials(true);
+                    return config;
+                });
+
+        http.cors(corsCustomizer)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/clients/**").hasAuthority(PUBLIC_CLIENT_ADMIN_ROLE)
                         .requestMatchers(HttpMethod.PUT, "/clients/**").hasAuthority(PUBLIC_CLIENT_ADMIN_ROLE)
@@ -57,18 +69,9 @@ public class SecurityConfig {
         return http.build();
     }
 
-
     @Bean
     public JwtDecoder jwtDecoder() {
         return JwtDecoders.fromIssuerLocation(issuerUri);
-    }
-
-
-    @Bean
-    public JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-        converter.setJwtGrantedAuthoritiesConverter(new KeycloakRoleConverter());
-        return converter;
     }
 
 }

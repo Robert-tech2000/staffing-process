@@ -1,5 +1,6 @@
 package com.example.staffing.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,9 +14,9 @@ import java.util.stream.Collectors;
 
 @Component
 public class JwtClaimsConverter implements Converter<Jwt, AbstractAuthenticationToken> {
+    @Value("${spring.security.oauth2.client.registration.keycloak.client-id}")
+    private static final String CONFIDENTIAL_CLIENT_NAME = "oauth2-staffing-process-client";
 
-    private static final String PUBLIC_CLIENT_NAME = "public-oauth2-staffing-process-client";
-    
     @Override
     public AbstractAuthenticationToken convert(Jwt jwt) {
         var authorities = extractRealmRoles(jwt);
@@ -33,7 +34,7 @@ public class JwtClaimsConverter implements Converter<Jwt, AbstractAuthentication
         // Extract client roles
         Map<String, Object> resourceAccess = (Map<String, Object>) jwt.getClaims().get("resource_access");
         if (resourceAccess != null) {
-            Map<String, Object> client = (Map<String, Object>) resourceAccess.get(PUBLIC_CLIENT_NAME);
+            Map<String, Object> client = (Map<String, Object>) resourceAccess.get(CONFIDENTIAL_CLIENT_NAME);
             if (client != null && client.containsKey("roles")) {
                 List<String> clientRoles = (List<String>) client.get("roles");
                 authorities.addAll(clientRoles.stream()
@@ -43,14 +44,5 @@ public class JwtClaimsConverter implements Converter<Jwt, AbstractAuthentication
         }
 
         return authorities;
-//        Map<String, Object> resource = jwt.getClaim("realm_access");
-//        Collection<String> roles;
-//        if (resource == null
-//                || (roles = (Collection<String>) resource.get("roles")) == null) {
-//            return Set.of();
-//        }
-//        return roles.stream()
-//                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
-//                .collect(Collectors.toSet());
     }
 }
