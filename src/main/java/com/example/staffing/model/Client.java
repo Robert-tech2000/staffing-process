@@ -18,5 +18,9 @@ public class Client extends AbstractEntity {
     private List<StaffingProcess> staffingProcesses;
 
     private String clientName;
+    private String clientEmail;
+    private String contactPersonName;
+    private String contactPersonEmail;
+    private String contactPersonPhone;
 
 }

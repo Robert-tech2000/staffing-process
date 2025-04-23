@@ -14,4 +14,8 @@ public class ClientDTO extends AbstractEntity {
 
     private String clientName;
     private List<StaffingProcess> staffingProcesses;
+    private String clientEmail;
+    private String contactPersonName;
+    private String contactPersonEmail;
+    private String contactPersonPhone;
 }

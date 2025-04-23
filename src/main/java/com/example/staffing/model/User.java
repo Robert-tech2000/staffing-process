@@ -1,23 +1,34 @@
 package com.example.staffing.model;
 
 import com.example.staffing.util.AbstractEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class User  extends AbstractEntity {
 
     @Column(unique = true, nullable = false)
     private String username;
 
-    @OneToMany
-    private Set<Role> roles;
+    private String firstName;
+    private String lastName;
+    private String position;
+    private String email;
+    private boolean available;
 
-    @OneToOne
-    private Employee employee;
+    @OneToMany
+    @JsonIgnore
+    private List<StaffingProcess> staffingProcesses;
+
+    @ElementCollection
+    private List<Role> roles;
+
 }

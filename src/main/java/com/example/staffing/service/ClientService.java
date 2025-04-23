@@ -1,7 +1,6 @@
 package com.example.staffing.service;
 
 import com.example.staffing.dto.ClientDTO;
-import com.example.staffing.dto.EmployeeDTO;
 import com.example.staffing.model.Client;
 import com.example.staffing.repository.ClientRepository;
 import org.slf4j.Logger;
@@ -22,9 +21,13 @@ public class ClientService {
         this.repository = repository1;
     }
 
-    public ClientDTO createClient(String name) {
+    public ClientDTO createClient(ClientDTO clientDTO) {
         Client client = new Client();
-        client.setClientName(name);
+        client.setClientName(clientDTO.getClientName());
+        client.setClientEmail(clientDTO.getClientEmail());
+        client.setContactPersonEmail(clientDTO.getContactPersonEmail());
+        client.setContactPersonName(clientDTO.getContactPersonName());
+        client.setContactPersonPhone(clientDTO.getContactPersonPhone());
         repository.save(client);
         logger.info("Client created successfully with ID: {}", client.getId());
         return convertClientToDTO(client);
