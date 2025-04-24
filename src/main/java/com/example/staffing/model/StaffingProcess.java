@@ -20,7 +20,7 @@ public class StaffingProcess extends AbstractEntity {
     private Client client;
 
     @ManyToOne
-    private Employee employee;
+    private User employee;
 
     @OneToMany
     private List<Comment> comments;
