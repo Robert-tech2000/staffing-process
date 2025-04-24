@@ -33,7 +33,7 @@ services:
       - keycloak_data:/opt/keycloak/data
       - ./docker/oauth2-staffing-process-UI-realm-export.json:/realm-import/oauth2-staffing-process-UI-realm-export.json
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8081/realms/master" ]
+      test: [ "CMD", "sh", "-c", "exec 3<>/dev/tcp/localhost/8080" ]
       interval: 10s
       timeout: 5s
       retries: 10
