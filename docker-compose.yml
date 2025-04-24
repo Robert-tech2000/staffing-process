@@ -30,7 +30,8 @@ services:
     ports:
       - 8081:8080
     volumes:
-      - ./docker/oauth2-staffing-process-realm-export.json:/opt/keycloak/data/import/oauth2-staffing-process-realm-export.json
+      - keycloak_data:/opt/keycloak/data
+      - ./docker/oauth2-staffing-process-UI-realm-export.json:/realm-import/oauth2-staffing-process-UI-realm-export.json
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8081/realms/master" ]
       interval: 10s
@@ -55,16 +56,16 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/staffing_process
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=pass
-      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://host.docker.internal:8081/realms/oauth2-staffing-process-realm
-      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_REDIRECT_URI=http://localhost:8080/login/oauth2/code/keycloak
-      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://host.docker.internal:8081/realms/oauth2-staffing-process-realm/protocol/openid-connect/certs
-      - KEYCLOAK_AUTH_SERVER_URL=http://host.docker.internal:8081/realms/oauth2-staffing-process-realm
-      - KEYCLOAK_REALM=staffing
-      - KEYCLOAK_RESOURCE=oauth2-staffing-process-client
-      - KEYCLOAK_CREDENTIALS_SECRET=I3NGBPpQGNjBfuqIGt9CcoxhLY8pzydn
+      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_CLIENT_ID=oauth2-staffing-process-client
+      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://host.docker.internal:8081/realms/oauth2-staffing-process-UI-realm
+      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_AUTHORIZATION_GRANT_TYPE=client_credentials
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://host.docker.internal:8081/realms/oauth2-staffing-process-UI-realm/protocol/openid-connect/certs
+      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_TOKEN_URI=http://localhost:8081/realms/oauth2-staffing-process-UI-realm/protocol/openid-connect/token
       - KEYCLOAK_PUBLIC_CLIENT=false
       - KEYCLOAK_ENABLE_CORS=true
       - KEYCLOAK_BEARER_ONLY=true
       - KEYCLOAK_SSL_REQUIRED=external
       - KEYCLOAK_USE_RESOURCE_ROLE_MAPPINGS=true
 
+volumes:
+  keycloak_data:

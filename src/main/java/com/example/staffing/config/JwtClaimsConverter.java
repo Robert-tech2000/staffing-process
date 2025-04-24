@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Component
 public class JwtClaimsConverter implements Converter<Jwt, AbstractAuthenticationToken> {
     @Value("${spring.security.oauth2.client.registration.keycloak.client-id}")
-    private static final String CONFIDENTIAL_CLIENT_NAME = "oauth2-staffing-process-client";
+    private String CONFIDENTIAL_CLIENT_NAME;
 
     @Override
     public AbstractAuthenticationToken convert(Jwt jwt) {
