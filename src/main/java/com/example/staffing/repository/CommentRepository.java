@@ -4,5 +4,8 @@ import com.example.staffing.model.Comment;
 import com.example.staffing.model.Employee;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
+
 public interface CommentRepository extends CrudRepository<Comment, Long> {
+    List<Comment> findByStaffingProcessId(Long staffingProcessId);
 }

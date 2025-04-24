@@ -15,7 +15,6 @@ public class UserController {
 
     private final UserRepository userRepository;
 
-    // FIXME There might a a better wau to do this, have fun.
     @GetMapping("/me")
     public User getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
         String username = jwt.getClaimAsString("preferred_username");

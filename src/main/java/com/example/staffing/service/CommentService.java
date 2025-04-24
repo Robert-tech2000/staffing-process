@@ -1,17 +1,23 @@
 package com.example.staffing.service;
 
+import com.example.staffing.config.JwtInterceptor;
 import com.example.staffing.dto.CommentDTO;
-import com.example.staffing.model.Client;
+import com.example.staffing.dto.mapper.CommentMapper;
 import com.example.staffing.model.Comment;
 import com.example.staffing.model.StaffingProcess;
+import com.example.staffing.model.User;
 import com.example.staffing.repository.CommentRepository;
 import com.example.staffing.repository.StaffingProcessRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.reactive.TransactionalOperator;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
@@ -19,25 +25,36 @@ public class CommentService {
     private final CommentRepository repository;
     private final StaffingProcessRepository staffingProcessRepository;
     private static final Logger logger = LoggerFactory.getLogger(CommentService.class);
+    private final CommentMapper commentMapper;
+    private JwtInterceptor keycloakUserContext;
 
-    public CommentService(CommentRepository repository, StaffingProcessRepository staffingProcessRepository) {
+    public CommentService(CommentRepository repository, StaffingProcessRepository staffingProcessRepository, CommentMapper commentMapper, JwtInterceptor keycloakUserContext) {
         this.repository = repository;
         this.staffingProcessRepository = staffingProcessRepository;
+        this.commentMapper = commentMapper;
+        this.keycloakUserContext = keycloakUserContext;
     }
 
 
-    public CommentDTO addComment(String title, String commentMessages, Long staffingProcessId, Long parentCommentId) {
+    @Transactional
+    public CommentDTO addComment(Long staffingId, CommentDTO dto) throws ChangeSetPersister.NotFoundException {
         Comment comment = new Comment();
-        StaffingProcess staffingProcess = staffingProcessRepository.findById(staffingProcessId).orElseThrow();
-        comment.setTitle(title);
-        comment.setComment(commentMessages);
-        comment.setStaffingProcess(staffingProcess);
-        comment.setCommentParent(parentCommentId);
 
-        repository.save(comment);
-        updateStaffingProcessWithNewComment(staffingProcess, comment);
-        logger.info("Comment created successfully with ID: {}", comment.getId());
-        return convertCommentToDTO(comment);
+        comment.setTitle(dto.getTitle());
+        comment.setComment(dto.getComment());
+        comment.setCommentParent(dto.getCommentParent());
+
+        // set staffing process
+        StaffingProcess process = staffingProcessRepository.findById(staffingId)
+                .orElseThrow(ChangeSetPersister.NotFoundException::new);
+        comment.setStaffingProcess(process);
+
+        // set current employee as author
+        User current = keycloakUserContext.getCurrentUser(); // adjust if needed
+        comment.setAuthor(current);
+
+        Comment saved = repository.save(comment);
+        return commentMapper.toDto(saved);
     }
 
     private void updateStaffingProcessWithNewComment(StaffingProcess staffingProcess, Comment comment) {
@@ -81,4 +98,10 @@ public class CommentService {
         return commentDTO;
     }
 
+    public List<CommentDTO> findByStaffingProcessId(Long staffingId) {
+        List<Comment> comments = repository.findByStaffingProcessId(staffingId);
+        return comments.stream()
+                .map(commentMapper::toDto)
+                .collect(Collectors.toList());
+    }
 }

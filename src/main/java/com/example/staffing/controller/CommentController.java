@@ -5,7 +5,6 @@ import com.example.staffing.service.CommentService;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,16 +18,6 @@ public class CommentController {
 
     public CommentController(CommentService service) {
         this.service = service;
-    }
-
-    @Transactional
-    @PostMapping()
-    public ResponseEntity<CommentDTO> addComment(
-            @RequestParam String title,
-            @RequestParam String comment,
-            @RequestParam("staff_process_id") Long staffingProcessId,
-            @RequestParam(value = "comment_id", required = false) Long parentCommentId) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.addComment(title, comment, staffingProcessId, parentCommentId));
     }
 
     @GetMapping("/{commentId}")
