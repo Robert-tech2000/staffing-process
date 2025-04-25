@@ -1,5 +1,7 @@
 package com.example.staffing.controller;
 
+import com.example.staffing.kafka.KafkaPayload;
+import com.example.staffing.kafka.KafkaPersistEventProducer;
 import com.example.staffing.model.Client;
 import com.example.staffing.model.Comment;
 import com.example.staffing.model.StaffingProcess;
@@ -7,7 +9,9 @@ import com.example.staffing.repository.ClientRepository;
 import com.example.staffing.repository.CommentRepository;
 import com.example.staffing.repository.StaffingProcessRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,11 +20,14 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/dev")
 @RequiredArgsConstructor
 public class DevController {
 
+
+    private final KafkaPersistEventProducer eventProducer;
     private final ClientRepository clientRepository;
     private final StaffingProcessRepository staffingRepository;
     private final CommentRepository commentRepository;
@@ -59,5 +66,17 @@ public class DevController {
         }
 
         return ResponseEntity.ok("Random data generated!");
+    }
+
+    @GetMapping("/ws")
+    public void trigerWs(){
+        log.info("Triggering WebSocket event");
+        System.out.println("Triggering WebSocket event");
+        KafkaPayload payload = KafkaPayload.builder()
+                .topic(KafkaPayload.Topic.STAFFING_PROCESS)
+                .action(KafkaPayload.Action.CREATE)
+                .userId("1")
+                .build();
+        eventProducer.publishEvent(payload);
     }
 }

@@ -48,6 +48,7 @@ public class SecurityConfig {
 
         http.cors(corsCustomizer)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/clients/**").hasAuthority(PUBLIC_CLIENT_ADMIN_ROLE)
                         .requestMatchers(HttpMethod.PUT, "/clients/**").hasAuthority(PUBLIC_CLIENT_ADMIN_ROLE)
                         .requestMatchers(HttpMethod.DELETE, "/clients/**").hasAuthority(PUBLIC_CLIENT_ADMIN_ROLE)
