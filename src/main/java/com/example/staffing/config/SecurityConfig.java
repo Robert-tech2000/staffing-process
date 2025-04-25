@@ -34,7 +34,8 @@ public class SecurityConfig {
         // Configure CORS and HTTP security
         http.cors(corsCustomizer)
                 .authorizeRequests(authz -> authz
-                        .requestMatchers("/api/public/**").permitAll()  // Public API routes
+                        .requestMatchers("/ws/**").permitAll()  // Public API routes
+                        .requestMatchers("/api/dev/**").permitAll()  // Public home route
                         .anyRequest().authenticated()  // All other routes require authentication
                 )
                 .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer

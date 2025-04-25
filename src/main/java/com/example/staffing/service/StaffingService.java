@@ -1,6 +1,9 @@
 package com.example.staffing.service;
 
+import com.example.staffing.config.JwtInterceptor;
 import com.example.staffing.dto.StaffingProcessDTO;
+import com.example.staffing.kafka.KafkaPayload;
+import com.example.staffing.kafka.KafkaPersistEventProducer;
 import com.example.staffing.model.Client;
 import com.example.staffing.model.StaffingProcess;
 import com.example.staffing.model.User;
@@ -24,10 +27,15 @@ public class StaffingService {
     private static final Logger logger = LoggerFactory.getLogger(StaffingService.class);
     private final UserRepository userRepository;
 
-    public StaffingService(StaffingProcessRepository repository, ClientRepository clientRepository, UserRepository userRepository) {
+    private final KafkaPersistEventProducer eventProducer;
+    private final JwtInterceptor jwtInterceptor;
+
+    public StaffingService(StaffingProcessRepository repository, ClientRepository clientRepository, UserRepository userRepository, KafkaPersistEventProducer eventProducer, JwtInterceptor jwtInterceptor) {
         this.repository = repository;
         this.clientRepository = clientRepository;
         this.userRepository = userRepository;
+        this.eventProducer = eventProducer;
+        this.jwtInterceptor = jwtInterceptor;
     }
 
     public StaffingProcessDTO createStaffingProcess(Long clientID, Long employeeId, String title) {
@@ -43,6 +51,15 @@ public class StaffingService {
         logger.info("Staffing Process created successfully with ID: {}", staffingProcess.getId());
 
         updateEmployeeAndClientStaffingProcesses(employee, client, staffingProcess);
+
+        eventProducer.publishEvent(
+                KafkaPayload.builder()
+                        .action(KafkaPayload.Action.CREATE)
+                        .userId(jwtInterceptor.getCurrentUser().getUsername())
+                        .topic(KafkaPayload.Topic.STAFFING_PROCESS)
+                        .build()
+        );
+
         return convertStaffingProcessToDTO(staffingProcess);
     }
 
@@ -102,6 +119,13 @@ public class StaffingService {
                 .orElseThrow(ChangeSetPersister.NotFoundException::new);
         process.setActive(false);
         repository.save(process);
+
+        eventProducer.publishEvent(
+                KafkaPayload.builder()
+                        .action(KafkaPayload.Action.UPDATE)
+                        .userId(jwtInterceptor.getCurrentUser().getUsername())
+                        .topic(KafkaPayload.Topic.STAFFING_PROCESS)
+                        .build());
     }
 
 }

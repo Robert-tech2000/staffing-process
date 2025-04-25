@@ -1,5 +1,7 @@
 package com.example.staffing.config;
 
+import com.example.staffing.kafka.KafkaPayload;
+import com.example.staffing.kafka.KafkaPersistEventProducer;
 import com.example.staffing.model.Role;
 import com.example.staffing.model.User;
 import com.example.staffing.repository.UserRepository;
@@ -31,13 +33,15 @@ public class JwtInterceptor implements HandlerInterceptor {
     private final UserRepository userRepository;
 
     private final HttpServletRequest request;
+    private final KafkaPersistEventProducer eventProducer;
 
     private User currentUser;
 
     @Autowired
-    public JwtInterceptor(UserRepository userRepository, HttpServletRequest request) {
+    public JwtInterceptor(UserRepository userRepository, HttpServletRequest request, KafkaPersistEventProducer eventProducer) {
         this.userRepository = userRepository;
         this.request = request;
+        this.eventProducer = eventProducer;
     }
 
     @Override
@@ -47,7 +51,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         if (authentication == null || !(authentication.getPrincipal() instanceof Jwt jwt)) {
             log.warn("No JWT found in security context.");
-            return false;
+            return true;
         }
 
         return !getUserFromToken(jwt);
@@ -68,7 +72,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         }
 
         this.currentUser = userRepository.findByUsername(username).orElseGet(() -> {
-            User newUser = User.builder()
+            User newAccount = User.builder()
                     .username(username)
                     .firstName(jwt.getClaimAsString("given_name"))
                     .lastName(jwt.getClaimAsString("family_name"))
@@ -82,12 +86,20 @@ public class JwtInterceptor implements HandlerInterceptor {
             boolean isUser = jwtRoles.contains(CLIENT_PUBLIC_USER);
 
             if (isAdmin) {
-                newUser.setRoles(List.of(Role.CLIENT_PUBLIC_ADMIN));
+                newAccount.setRoles(List.of(Role.CLIENT_PUBLIC_ADMIN));
             } else if (isUser) {
-                newUser.setRoles(List.of(Role.CLIENT_PUBLIC_USER));
+                newAccount.setRoles(List.of(Role.CLIENT_PUBLIC_USER));
             }
-            return userRepository.save(newUser);
+            newAccount = userRepository.save(newAccount);
+            eventProducer.publishEvent(
+                    KafkaPayload.builder()
+                            .action(KafkaPayload.Action.CREATE)
+                            .userId(newAccount.getUsername())
+                            .topic(KafkaPayload.Topic.EMPLOYEES)
+                            .build());
+            return newAccount;
         });
+
         return false;
     }
 

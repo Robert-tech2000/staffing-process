@@ -1,6 +1,9 @@
 package com.example.staffing.service;
 
+import com.example.staffing.config.JwtInterceptor;
 import com.example.staffing.dto.ClientDTO;
+import com.example.staffing.kafka.KafkaPayload;
+import com.example.staffing.kafka.KafkaPersistEventProducer;
 import com.example.staffing.model.Client;
 import com.example.staffing.repository.ClientRepository;
 import org.slf4j.Logger;
@@ -16,9 +19,13 @@ public class ClientService {
     private final ClientRepository repository;
     private static final Logger logger = LoggerFactory.getLogger(ClientService.class);
 
-    public ClientService(ClientRepository repository, ClientRepository repository1) {
+    private final KafkaPersistEventProducer eventProducer;
+    private final JwtInterceptor jwtInterceptor;
 
+    public ClientService(ClientRepository repository, ClientRepository repository1, KafkaPersistEventProducer eventProducer, JwtInterceptor jwtInterceptor) {
         this.repository = repository1;
+        this.eventProducer = eventProducer;
+        this.jwtInterceptor = jwtInterceptor;
     }
 
     public ClientDTO createClient(ClientDTO name) {
@@ -30,6 +37,14 @@ public class ClientService {
         client.setContactPersonPhone(name.getContactPersonPhone());
         repository.save(client);
         logger.info("Client created successfully with ID: {}", client.getId());
+
+        eventProducer.publishEvent(
+                KafkaPayload.builder()
+                        .action(KafkaPayload.Action.CREATE)
+                        .userId(jwtInterceptor.getCurrentUser().getUsername())
+                        .topic(KafkaPayload.Topic.CLIENTS)
+                        .build());
+
         return convertClientToDTO(client);
     }
 

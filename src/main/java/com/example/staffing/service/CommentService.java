@@ -3,6 +3,8 @@ package com.example.staffing.service;
 import com.example.staffing.config.JwtInterceptor;
 import com.example.staffing.dto.CommentDTO;
 import com.example.staffing.dto.mapper.CommentMapper;
+import com.example.staffing.kafka.KafkaPayload;
+import com.example.staffing.kafka.KafkaPersistEventProducer;
 import com.example.staffing.model.Comment;
 import com.example.staffing.model.StaffingProcess;
 import com.example.staffing.model.User;
@@ -26,13 +28,15 @@ public class CommentService {
     private final StaffingProcessRepository staffingProcessRepository;
     private static final Logger logger = LoggerFactory.getLogger(CommentService.class);
     private final CommentMapper commentMapper;
-    private JwtInterceptor keycloakUserContext;
+    private JwtInterceptor jwtInterceptor;
+    private final KafkaPersistEventProducer eventProducer;
 
-    public CommentService(CommentRepository repository, StaffingProcessRepository staffingProcessRepository, CommentMapper commentMapper, JwtInterceptor keycloakUserContext) {
+    public CommentService(CommentRepository repository, StaffingProcessRepository staffingProcessRepository, CommentMapper commentMapper, JwtInterceptor jwtInterceptor, KafkaPersistEventProducer eventProducer) {
         this.repository = repository;
         this.staffingProcessRepository = staffingProcessRepository;
         this.commentMapper = commentMapper;
-        this.keycloakUserContext = keycloakUserContext;
+        this.jwtInterceptor = jwtInterceptor;
+        this.eventProducer = eventProducer;
     }
 
 
@@ -50,10 +54,19 @@ public class CommentService {
         comment.setStaffingProcess(process);
 
         // set current employee as author
-        User current = keycloakUserContext.getCurrentUser(); // adjust if needed
+        User current = jwtInterceptor.getCurrentUser(); // adjust if needed
         comment.setAuthor(current);
 
         Comment saved = repository.save(comment);
+
+
+        eventProducer.publishEvent(
+                KafkaPayload.builder()
+                        .action(KafkaPayload.Action.CREATE)
+                        .userId(jwtInterceptor.getCurrentUser().getUsername())
+                        .topic(KafkaPayload.Topic.COMMENTS)
+                        .build());
+        
         return commentMapper.toDto(saved);
     }
 
