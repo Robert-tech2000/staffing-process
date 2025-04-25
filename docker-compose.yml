@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: mysql:latest
@@ -18,27 +16,21 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.1
     container_name: staffing-process-keycloak
-    command:
-      - start-dev
-      - --import-realm
-      - --hostname-url=http://host.docker.internal:8081
-      - --hostname-strict=false
+    command: -v start-dev --import-realm --hostname-url=http://keycloak:8080
     environment:
-      KC_DB: dev-file
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
     ports:
       - 8081:8080
     volumes:
-      - keycloak_data:/opt/keycloak/data
-      - ./docker/oauth2-staffing-process-UI-realm-export.json:/realm-import/oauth2-staffing-process-UI-realm-export.json
+      - ./docker/keycloak:/opt/keycloak/data/import
     healthcheck:
       test: [ "CMD", "sh", "-c", "exec 3<>/dev/tcp/localhost/8080" ]
       interval: 10s
       timeout: 5s
       retries: 10
 
-  staffingProcessService:
+  backend-app:
     build:
       context: .
       dockerfile: Dockerfile
@@ -52,21 +44,23 @@ services:
         condition: service_healthy
       keycloak:
         condition: service_healthy
+      kafka:
+        condition: service_started
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/staffing_process
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=pass
       - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_CLIENT_ID=oauth2-staffing-process-client
-      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://host.docker.internal:8081/realms/oauth2-staffing-process-UI-realm
+      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://keycloak:8080/realms/oauth2-staffing-process-UI-realm
       - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_AUTHORIZATION_GRANT_TYPE=client_credentials
-      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://host.docker.internal:8081/realms/oauth2-staffing-process-UI-realm/protocol/openid-connect/certs
-      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_TOKEN_URI=http://localhost:8081/realms/oauth2-staffing-process-UI-realm/protocol/openid-connect/token
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://keycloak:8080/realms/oauth2-staffing-process-UI-realm/protocol/openid-connect/certs
+      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_TOKEN_URI=http://keycloak:8080/realms/oauth2-staffing-process-UI-realm/protocol/openid-connect/token
       - KEYCLOAK_PUBLIC_CLIENT=false
       - KEYCLOAK_ENABLE_CORS=true
       - KEYCLOAK_BEARER_ONLY=true
       - KEYCLOAK_SSL_REQUIRED=external
       - KEYCLOAK_USE_RESOURCE_ROLE_MAPPINGS=true
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=host.docker.internal:9092
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
   zookeeper:
     image: 'confluentinc/cp-zookeeper:7.5.0'
@@ -87,6 +81,3 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'PLAINTEXT:PLAINTEXT'
       KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://host.docker.internal:9092'
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-
-volumes:
-  keycloak_data:
