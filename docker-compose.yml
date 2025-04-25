@@ -21,8 +21,10 @@ services:
     command:
       - start-dev
       - --import-realm
-      - --hostname-url=http://host.docker.internal:8081
-      - --hostname-strict=false
+      - --features=scripts
+      - --spi-theme-static-max-age=-1
+      - --spi-theme-cache-themes=false
+      - --spi-theme-cache-templates=false
     environment:
       KC_DB: dev-file
       KEYCLOAK_ADMIN: admin
@@ -30,8 +32,7 @@ services:
     ports:
       - 8081:8080
     volumes:
-      - keycloak_data:/opt/keycloak/data
-      - ./docker/oauth2-staffing-process-UI-realm-export.json:/realm-import/oauth2-staffing-process-UI-realm-export.json
+      - ./docker/oauth2-staffing-process-UI-realm-export.json:/opt/keycloak/data/import/oauth2-staffing-process-UI-realm-export.json
     healthcheck:
       test: [ "CMD", "sh", "-c", "exec 3<>/dev/tcp/localhost/8080" ]
       interval: 10s
@@ -87,6 +88,3 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'PLAINTEXT:PLAINTEXT'
       KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://host.docker.internal:9092'
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-
-volumes:
-  keycloak_data:
